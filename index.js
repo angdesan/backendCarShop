@@ -6,6 +6,7 @@ const engine = require('ejs-locals');
 const app = express();
 const config = require('./lib/env').getConfig();
 const db = require('./lib/db');
+const client = require('./api/routes')
 
 const env = config.env
 const port = config.server.port;
@@ -18,13 +19,16 @@ app.engine('ejs', engine);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.use('/api/client/v1',client);
+// renderización app React
+app.use(express.static(path.join(__dirname, "build")));
 
-db.connectToServer((err)=>{
-    if(err){
-        console.error('Error al conectar con la base de datos');
+
+db.connectToServer((err) => {
+    if (err) {
         if (env != 'production') console.log(err);
         process.exit()
-    }   
+    }
     app.listen(port, () => {
         console.log(`✔ Express server listening on port ${port}`);
     })
