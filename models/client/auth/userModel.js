@@ -10,10 +10,10 @@ const insertOne = async (doc)=>{
         return err;
     }
 }
-const find = async(query, options) =>{
+const findOne = async(query, options) =>{
     try{
         const db = mongo.getDb();
-        let findData = await db.collection('user').find(query,options);
+        let findData = await db.collection('user').findOne(query,options);
         return findData;
     }catch(err){
         console.log('Error al encontrar el usuario');
@@ -22,5 +22,5 @@ const find = async(query, options) =>{
 }
 module.exports = {
     insertOne,
-    find
+    findOne
 }

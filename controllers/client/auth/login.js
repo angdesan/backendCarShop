@@ -13,21 +13,21 @@ const login = async (req,res)=>{
         if(!user){
             return res.status(404).send("No se encuentra el usuario solicitado");
         }
-        if(!bcrypt.compareSync(data_from_page.password, user.password)){
+        if(!bcrypt.compareSync(loginData.password, user.password)){
             return res.status(404).send("Usuario o contraseña incorrecta");
         }
         let token = jwt.sign({
             _id: user._id,
-            username: user.username
+            correo: user.correo
 
         },config.jwt.secretKey,{
             expiresIn:  config.jwt.expiration.login
         });
-        return res.status(200).json({
-            ok: true,
-            usuario: user,
-            token:token
-        })
+        res.header('auth-token',token).json({
+            error: null,
+            data: {token},
+            message: 'login exitoso'
+        });
     }catch(err){
         return res.status(500).send("Error al encontrar el usuario");
     }
