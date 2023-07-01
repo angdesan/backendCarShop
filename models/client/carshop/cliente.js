@@ -1,4 +1,5 @@
 const mongo = require('./../../../lib/db');
+const {ObjectId} = require('mongodb');
 
 const insertOne = async(doc) =>{
     try{
@@ -10,5 +11,36 @@ const insertOne = async(doc) =>{
         return {err};
     }
 }
+const findOne = async (idCliente) =>{
+    try{
+        const db = mongo.getDb();
+        let cliente = await db.collection('cliente').findOne({
+            _id: ObjectId(idCliente)
+        });
+        return cliente;
+    }catch(err){
+        console.log('Error al encontrar el cliente');
+        return {err}
+    }
+}
+const updateOne = async (idCliente,updateCliente) => {
+    try{
+        const db = mongo.getDb();
+        let updateClient = await db.collection('cliente').updateOne({
+            _id: ObjectId(idCliente)
+        },{
+            $set: updateCliente
+        });
+        return updateClient;
 
-module.exports = insertOne;
+    }catch(err){
+        console.log('Error al actualizar el cliente');
+        return {err}
+    }
+}
+
+module.exports = {
+    insertOne,
+    findOne,
+    updateOne
+}
