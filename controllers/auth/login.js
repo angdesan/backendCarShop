@@ -67,9 +67,9 @@ const loginCarShopClient = async (req,res) =>{
 const loginCarShopAdmin = async (req,res)=>{
     try{
         const loginData = req.body;
-    let user = await userModel.findOne({
-        correo: loginData.correo
-    },{});
+        let user = await userModel.findOne({
+            correo: loginData.email
+        },{});
     const validations = loginValidation(user,loginData);
     if(validations.error !==null){
         return res.status(404).json(validations);
@@ -77,20 +77,17 @@ const loginCarShopAdmin = async (req,res)=>{
     if(user.role !== "admin" && user.role !== "operario"){
         return res.status(403).json({error:"El usuario no cuenta con el rol respectivo"});
     }
-    let token = jwt.sign({
-        _id: user._id,
+    req.session.user = {
+        userId: user._id,
         correo: user.correo
+    }
 
-    },config.jwt.secretKey,{
-        expiresIn:  config.jwt.expiration.login
-    });
-    res.header('auth-token',token).json({
-        error: null,
-        data: {token,idUser: user._id},
+    res.json({
+        code: "OK",
         message: 'login exitoso',
     });
     }catch(err){
-
+        return res.status(500).json({error: "Error al encontrar el usuario"});
     }
 
 }

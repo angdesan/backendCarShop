@@ -13,7 +13,8 @@ const config = {
     },
     cors:{
         whitelist: [
-            'http://localhost:3000'
+            'http://localhost:3000',
+            'http://localhost:10000'
         ]
     }
 }

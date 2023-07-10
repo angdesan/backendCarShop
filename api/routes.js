@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require('./routes/client/auth');
 const authAdmin = require('./routes/admin/auth')
 const carshop = require('./routes/client/carShop');
+const carShopAdmin = require('./routes/admin/carshop');
 const carshopServices = require('./routes/client/apiOrden');
 router
 .get('/', (req, res) => {
@@ -17,6 +18,7 @@ router
 
 // rutas para admin
 .use('/admin/auth',authAdmin)
+.use('/admin/carshop',carShopAdmin)
 
 
 //ruta api ordenes

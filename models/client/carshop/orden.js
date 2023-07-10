@@ -78,10 +78,69 @@ const updateOne = async (idOrden,updateOrden) => {
         return {err}
     }
 }
+const findAll = async  ()=>{
+    try{
+        const db = mongo.getDb();
+            let ordenes = await db.collection('orden').aggregate([{
+                $match: {
+                    estadoLogico: 1
+                }
+            },{
+                $lookup: {
+                    from: "cliente",
+                    localField: "cliente",
+                    foreignField: "_id",
+                    as: "cliente"
+                }
+            },{
+                $unwind: {
+                    path: "$cliente",
+                    preserveNullAndEmptyArrays: true
+                }
+            
+            },{
+                $lookup: {
+                    from: "vehiculo",
+                    localField: "vehiculo",
+                    foreignField: "_id",
+                    as: "vehiculo"
+                }
+            },{
+                    
+                $unwind: {
+                    path: "$vehiculo",
+                    preserveNullAndEmptyArrays: true
+                }
+            }]).toArray();
+            return ordenes;
+    }catch(err){
+        console.log('Error al obtener las ordenes');
+        return {err}
+    }
+}
+const deleteOne = async(idOrden) =>{
+    try{
+        const db = mongo.getDb();
+        let deleteLogico = await db.collection('orden').updateOne({
+            _id: new ObjectId(idOrden)
+        },{
+            $set: {
+                estadoLogico: 0
+            }
+        })
+        return deleteLogico;
+
+    }catch(err){
+        console.log('Error al eliminar la orden');
+        return {err}
+    }
+}
 
 module.exports = {
     insertOne,
     find,
     findOne,
-    updateOne
+    updateOne,
+    findAll,
+    deleteOne
 }
