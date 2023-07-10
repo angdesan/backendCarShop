@@ -1,6 +1,6 @@
-const ordenModel = require('./../../../models/client/carshop/orden');
-const clienteModel = require('./../../../models/client/carshop/cliente');
-const vehiculoModel = require('./../../../models/client/carshop/vehiculo');
+const ordenModel = require('./../../../models/carshop/orden');
+const clienteModel = require('./../../../models/carshop/cliente');
+const vehiculoModel = require('./../../../models/carshop/vehiculo');
 
 
 const generarOrden = async(req, res)=>{

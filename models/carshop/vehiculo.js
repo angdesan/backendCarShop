@@ -1,4 +1,4 @@
-const mongo = require('./../../../lib/db');
+const mongo = require('../../lib/db');
 
 const insertOne = async(doc) =>{
     try{
