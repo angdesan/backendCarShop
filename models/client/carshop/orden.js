@@ -15,8 +15,8 @@ const find = async(idUser) =>{
     try{
         const db = mongo.getDb();
         let ordenesByIdUser = await db.collection('orden').find({
-            idUser: ObjectId(idUser)
-        });
+            idUser: new ObjectId(idUser)
+        }).toArray();
         return ordenesByIdUser;
     }catch(err){
         console.log('error al obtener las ordenes por usuario');
@@ -26,10 +26,38 @@ const find = async(idUser) =>{
 const findOne = async (idOrden) =>{
     try{
         const db = mongo.getDb();
-        let ordenById = await db.collection('orden').findOne({
-            _id: ObjectId(idOrden)
-        });
-        return ordenById;
+        let ordenById = await db.collection('orden').aggregate([{
+            $match:{
+                _id: new ObjectId(idOrden)
+            }       
+        },{
+            $lookup: {
+                from: "cliente",
+                localField: "cliente",
+                foreignField: "_id",
+                as: "cliente"
+            }
+        },{
+            $unwind: {
+                path: "$cliente",
+                preserveNullAndEmptyArrays: true
+            }
+        
+        },{
+            $lookup: {
+                from: "vehiculo",
+                localField: "vehiculo",
+                foreignField: "_id",
+                as: "vehiculo"
+            }
+        },{
+                
+            $unwind: {
+                path: "$vehiculo",
+                preserveNullAndEmptyArrays: true
+            }
+        }]);
+        return ordenById.toArray();
     }catch(err){
         console.log('error al obtener la orden solicitada');
         return {err}
@@ -39,7 +67,7 @@ const updateOne = async (idOrden,updateOrden) => {
     try{
         const db = mongo.getDb();
         let updatedOrden = await db.collection('orden').updateOne({
-            _id: ObjectId(idOrden)
+            _id: new ObjectId(idOrden)
         },{
             $set: updateOrden
         });
@@ -54,5 +82,6 @@ const updateOne = async (idOrden,updateOrden) => {
 module.exports = {
     insertOne,
     find,
-    findOne
+    findOne,
+    updateOne
 }

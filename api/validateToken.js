@@ -3,7 +3,7 @@ const env = require('./../lib/env');
 const config = env.getConfig()
 
 const verifyToken = (req, res, next) =>{
-    const token = req.header('auth-token');
+    const token = req.headers.authorization?.split(' ')[1];
     if(!token) return res.json({error: 'Acceso denegado'});
     try{
         const verified = jwt.verify(token, config.jwt.secretKey);

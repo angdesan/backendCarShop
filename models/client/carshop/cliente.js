@@ -15,7 +15,7 @@ const findOne = async (idCliente) =>{
     try{
         const db = mongo.getDb();
         let cliente = await db.collection('cliente').findOne({
-            _id: ObjectId(idCliente)
+            _id: new ObjectId(idCliente)
         });
         return cliente;
     }catch(err){
@@ -27,7 +27,7 @@ const updateOne = async (idCliente,updateCliente) => {
     try{
         const db = mongo.getDb();
         let updateClient = await db.collection('cliente').updateOne({
-            _id: ObjectId(idCliente)
+            _id: new ObjectId(idCliente)
         },{
             $set: updateCliente
         });

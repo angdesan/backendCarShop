@@ -6,19 +6,19 @@ const vehiculoModel = require('./../../../models/client/carshop/vehiculo');
 const generarOrden = async(req, res)=>{
     try{
         const ordenData = req.body;
-        let {nombre,email,numeroContacto,tipoIdentificacion,identificacion} = ordenData.cliente;
+        const idUsuario = req.headers['user_id'];
+        let {nombreCliente,email,numeroContacto,tipoIdentificacion,identificacion} = ordenData.cliente;
         let {marca,modelo,placa,nivelTanqueGas,detalle} = ordenData.vehiculo;
         let servicios = ordenData.servicios;
-        let idUsuario = ordenData.idUsuario;
         let insertDataCliente = await clienteModel.insertOne({
-            nombre: nombre,
+            nombre: nombreCliente,
             correo: email,
             numeroContacto: numeroContacto,
             tipoIdentificacion: tipoIdentificacion,
             identificacion: identificacion
         });
         if(insertDataCliente.err){
-            return res.status(500).send("Error al crear el cliente de la orden");
+            return res.status(500).json({error:"Error al crear el cliente de la orden"});
         }
         let inserDataVehiculo = await vehiculoModel.insertOne({
             marca: marca,
@@ -28,7 +28,7 @@ const generarOrden = async(req, res)=>{
             detalle: detalle
         });
         if(inserDataVehiculo.err){
-            return res.status(500).send("Error al crear el vehiculo de la orden");
+            return res.status(500).json({error:"Error al crear el vehiculo de la orden"});
         };
         let insertDataOrden = await ordenModel.insertOne({
             cliente: insertDataCliente.insertedId,
@@ -42,20 +42,35 @@ const generarOrden = async(req, res)=>{
         res.status(201).json(insertDataOrden);
 
     }catch(err){
-        return res.status(500).send("Error al generar la orden");
+        return res.status(500).json({error: "Error al generar la orden"});
     }
 }
-const obtenerOrdenByUserId = async (req,res)=>{
+const obtenerOrdenesByUserId = async (req,res)=>{
     try{
-        const data_from_page = req.body;
-        let idUser = data_from_page.idUsuario;
+        const idUser = req.headers['user_id'];
         let ordenes = await ordenModel.find(idUser);
         if(ordenes.err){
-            return res.status(500).send("Error al encontrar las ordenes");
+            return res.status(500).json({error: "Error al encontrar las ordenes"});
         }
         return res.status(201).json(ordenes);
     }catch(err){
-        return res.status(500).json('Error al encontrar las ordenes por usuario');
+        return res.status(500).json({error: 'Error al encontrar las ordenes por usuario'});
+    }
+}
+
+const obtenerOrdenById = async (req,res)=>{
+    try{
+        
+        const idOrden = req.params.id;
+        let orden = await ordenModel.findOne(idOrden);
+        if(orden.err){
+            return res.status(500).json({error: "Error al encontrar la orden solicitada"});
+        }
+        return res.status(201).json(orden);
+
+    }catch(err){
+        console.log('Error en obtenerOrdenById: ',err);
+        return res.status(500).json({error: 'Error interno en el servidor'});
     }
 }
 
@@ -111,6 +126,7 @@ const editarOrden = async (req,res)=>{
 
 module.exports = {
     generarOrden,
-    obtenerOrdenByUserId,
+    obtenerOrdenesByUserId,
+    obtenerOrdenById,
     editarOrden
 }
