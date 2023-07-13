@@ -9,8 +9,8 @@ const configCors = require('./config/cors');
 const app = express();
 const config = require('./lib/env').getConfig();
 const db = require('./lib/db');
-const routesCarShop = require('./api/routes')
-
+const routesApi = require('./api/routes/routesApi');
+const routesAdmin = require('./api/routes/routesViews');
 const env = config.env
 const port = config.server.port;
 
@@ -19,7 +19,7 @@ app.use(bodyParser.json({ type: 'application/json' }))
 app.use(cors(configCors))
 app.use(session({
     secret: 'password',
-    cookie: {maxAge: 60000}
+    cookie: {maxAge: 3600000 }
 
 }));
 
@@ -29,8 +29,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 // API
-app.use('/api/v1',routesCarShop);
+app.use('/api',routesApi);
 
+//sitio admin
+app.use('/admin',routesAdmin);
 
 app.use((req, res, next) => {
     if (req.url === '/' || req.url.startsWith('/client')) {
@@ -38,14 +40,6 @@ app.use((req, res, next) => {
     } else {
       next();
     }
-});
-
-//ruta para admin
-app.use('/admin',(req,res)=>{
-    if(req.session.user){
-        return res.render('admin/index',{name: 'Administrator'});
-    }
-    return res.render('admin/login')
 });
 
 

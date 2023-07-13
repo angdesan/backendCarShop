@@ -29,9 +29,7 @@
 
     async function getData(url ="") {
       const response = await fetch(url);
-      const jsonData = await response.json();
-      console.log(jsonData);
-      return jsonData;
+      return response;
     }
     
 </script>
@@ -294,12 +292,19 @@ $(document).ready(function(){
 		<div class="table-wrapper">
 			<div class="table-title">
 				<div class="row">
-					<div class="col-sm-6">
+					<div class="col-sm-4">
 						<h2>Manage <b>Carshop</b></h2>
 					</div>
-					<div class="col-sm-6">
-						<a href="#addBookingModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Editar Orden</span></a>
-						<a href="#deleteOrden" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Eliminar Orden</span></a>						
+					<div class="col-sm-8">
+						<% if (name === 'admin') { %>
+							<a href="#agendarCitaOrden" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Agendar cita</span></a>
+							<a href="#deleteOrden" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Eliminar Orden</span></a>						
+							<a href="#cancelarOrden" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Cancelar Orden</span></a>						
+							<input id="cerrar_sesion" class="btn btn-danger" value="Cerrar sesion">
+						<% } else { %>
+							<a href="#agendarCitaOrden" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Agendar cita</span></a>
+							<input id="cerrar_sesion" class="btn btn-danger" value="Cerrar sesion">							
+						<% } %>
 					</div>
 				</div>
 			</div>
@@ -325,7 +330,7 @@ $(document).ready(function(){
 						<th data-field="vehiculo.marca" data-editable="true" >Marca</th>
 						<th data-field="vehiculo.modelo" data-editable="true" >Modelo</th>
 						<th data-field="vehiculo.placa" data-editable="true" >Placa</th>
-					    <th data-field="actions" >Actions</th>
+						<th data-field="estado" data-editable="true" >Estado</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -346,71 +351,25 @@ $(document).ready(function(){
 		</div>
 	</div>        
 </div>
+
 <!-- Edit Modal HTML -->
-<div id="addBookingModal" class="modal fade">
+<div id="agendarCitaOrden" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form>
 				<div class="modal-header">						
-					<h4 class="modal-title">Add Booking</h4>
+					<h4 class="modal-title">Agendar cita</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">					
 					<div class="form-group">
-						<label>First Name</label>
-						<input id="new_first_name" type="text" class="form-control" required>
-					</div>
-					<div class="form-group">
-						<label>Last Name</label>
-						<input id="new_last_name" type="text" class="form-control" required>
-					</div>
-					<div class="form-group">
-						<label>Address</label>
-						<textarea id="new_address" class="form-control" required></textarea>
-					</div>
-					<div class="form-group">
-						<label>City</label>
-						<input id="new_city"  type="text" class="form-control" required>
-					</div>					
+						<label>Fecha y hora a agendar</label>
+						<input id="fecha_hora"  type="datetime-local" class="form-control" required>
+					</div>			
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<input id="new_booking" class="btn btn-success" value="Add">
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-<!-- Edit Modal HTML -->
-<div id="editBookingModal" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form>
-				<div class="modal-header">						
-					<h4 class="modal-title">Edit Booking</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">					
-					<div class="form-group">
-						<label>First Name</label>
-						<input type="text" class="form-control" required>
-					</div>
-					<div class="form-group">
-						<label>Last Name</label>
-						<input type="text" class="form-control" required>
-					</div>
-					<div class="form-group">
-						<label>Address</label>
-						<textarea class="form-control" required></textarea>
-					</div>
-					<div class="form-group">
-						<label>City</label>
-						<input type="text" class="form-control" required>
-					</div>					
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<input type="submit" class="btn btn-info" value="Save">
+					<input id="agendar_cita" type="submit" class="btn btn-info" value="Agendar">
 				</div>
 			</form>
 		</div>
@@ -422,12 +381,12 @@ $(document).ready(function(){
 		<div class="modal-content">
 			<form>
 				<div class="modal-header">						
-					<h4 class="modal-title">Delete Booking</h4>
+					<h4 class="modal-title">Borrar Orden</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">					
-					<p>Are you sure you want to delete these Records?</p>
-					<p class="text-warning"><small>This action cannot be undone.</small></p>
+					<p>Se encuentra seguro de realizar esta acción?</p>
+					<p class="text-warning"><small>Esta acción no puede ser deshecha.</small></p>
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -437,26 +396,104 @@ $(document).ready(function(){
 		</div>
 	</div>
 </div>
+
+<!-- Cancelar orden modal -->
+<div id="cancelarOrden" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Cancelar Orden</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p>Se encuentra seguro de realizar esta acción?</p>
+					<div class="form-group">
+						<label>Motivo de cancelación: </label>
+						<textarea id="motivoCancel" type="text" class="form-control" required></textarea>
+					</div>	
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="cancelar_orden" type="submit" class="btn btn-danger" value="Cancelar Orden">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 </body>
 <script>
 
-    const newBookings = document.getElementById('new_booking');
+	const cerrarSesion = document.getElementById('cerrar_sesion');
+	
+	cerrarSesion.addEventListener('click', e =>{
+		logOut();
+	})
+	function logOut(){
+		const url = 'http://localhost:10000/api/v1/admin/auth/logout/'
+		getData(url)
+		.then(response =>{
+			if(response.redirected){
+				window.location.href =response.url;
+			} else{
+				location.reload();
+			}
+		})
+		.catch(error =>{
+			console.log("Error al cerrar sesion ", error);
+		});
+	}
+
+	const cancelarOrden = document.getElementById('cancelar_orden');
+
+	cancelarOrden.addEventListener('click', e =>{
+		cancelacionOrden();
+	})
+	function cancelacionOrden(){
+		const orden = $("#table").bootstrapTable('getSelections');
+		let ordenSelect;
+		let data = {}
+		let url =  'http://localhost:10000/api/v1/admin/carshop/orden/';
+		if(orden.length){
+			ordenSelect = orden[0];
+			data = {
+				estado: "Cancelada",
+				motivoCancelacion: $('#motivoCancel').val(),
+			}
+			console.log('DATA:', data)
+			url = url + ordenSelect._id+ '/cancelarOrden';
+			const response = putData(url, data);
+		}
+		
+        $('#cancelarOrden').modal('hide');
+        $('#table').bootstrapTable('refresh')
+	}
+
+    const agendarCita = document.getElementById('agendar_cita');
     
-    newBookings.addEventListener('click', e => {
+    agendarCita.addEventListener('click', e => {
        
-       newBooking();
+		AgendarCitaOrd();
     });
 
-    function newBooking(){ 
-        const data = { 
-            first_name: $('#new_first_name').val(), 
-            last_name: $('#new_last_name').val(),
-            address: $('#new_address').val(),
-            city: $('#new_city').val()
-        }
-        console.log('DATA:', data)
-        const response = postData('http://localhost:3000/admin/bookings', data);
-        $('#addBookingModal').modal('hide');
+    function AgendarCitaOrd(){ 
+		const orden = $("#table").bootstrapTable('getSelections');
+		let ordenSelect;
+		let data = {}
+		let url =  'http://localhost:10000/api/v1/admin/carshop/orden/';
+		if(orden.length){
+			ordenSelect = orden[0];
+			data = {
+				estado: "Cita Agendada",
+				fechaCita: $('#fecha_hora').val(),
+			}
+			console.log('DATA:', data)
+			url = url + ordenSelect._id + '/agendarCitaOrden';
+			const response = putData(url, data);
+		}
+		
+        $('#agendarCitaOrden').modal('hide');
         $('#table').bootstrapTable('refresh')
     }
 
@@ -480,10 +517,10 @@ $(document).ready(function(){
         $('#table').bootstrapTable('refresh')
     }
 
-    async function postData(url = "", data = {}) {
+    async function putData(url = "", data = {}) {
         // Default options are marked with *
         const response = await fetch(url, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            method: "PUT", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, *cors, same-origin
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit
@@ -513,17 +550,19 @@ $(document).ready(function(){
         return response.json(); // parses JSON response into native JavaScript objects
     }
 
-    // $(document).ready(function () {    
-    //     $('#table').SetEditable({
-    //         onEdit:function(data) {
-    //             console.log('Edit:', data)
-    //         },
-    //         onDelete:function(data) {
-    //             console.log('Delete:', data)
-    //         }
-    //     });
+    $(document).ready(function () {
+		$('a[href="#agendarCitaOrden"]').on('click', function(){
+			const selectedRow = $('#table').bootstrapTable('getSelections');
+			console.log("registro a editar: ", selectedRow);
+			if(selectedRow.length){
+				const orden = selectedRow[0];
+				const id = orden._id;
+				const estado = orden.estado;
 
-    // });
+				$('#agendarCitaOrden').find('#estado').val(estado);
+			}
+		})
+    });
     
 
 </script>

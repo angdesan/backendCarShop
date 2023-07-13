@@ -34,6 +34,7 @@ const login = async (req,res)=>{
         return res.status(500).json({error: "Error al encontrar el usuario"});
     }
 }
+
 const loginCarShopClient = async (req,res) =>{
     try{
         const loginData = req.body;
@@ -64,6 +65,7 @@ const loginCarShopClient = async (req,res) =>{
     }
 
 }
+
 const loginCarShopAdmin = async (req,res)=>{
     try{
         const loginData = req.body;
@@ -79,13 +81,10 @@ const loginCarShopAdmin = async (req,res)=>{
     }
     req.session.user = {
         userId: user._id,
-        correo: user.correo
+        correo: user.correo,
+        role: user.role
     }
-
-    res.json({
-        code: "OK",
-        message: 'login exitoso',
-    });
+    res.redirect('/admin/index')
     }catch(err){
         return res.status(500).json({error: "Error al encontrar el usuario"});
     }
@@ -102,8 +101,19 @@ const loginValidation = (user,loginData) =>{
     return {error: null}
 }
 
+const logOutAdmin = async (req, res)=>{
+    req.session.destroy((err)=>{
+        if(err){
+            console.log(err);
+        } else {
+            res.redirect('/admin/login');
+        }
+    })
+}
+
 module.exports = {
     login,
     loginCarShopClient,
-    loginCarShopAdmin
+    loginCarShopAdmin,
+    logOutAdmin
 };

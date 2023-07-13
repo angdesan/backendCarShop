@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const validateJWT = require('./../../validateToken');
-const ordenController = require('./../../../controllers/client/carshop/orden');
+const {verifyToken} = require('../../../validateRoutes');
+const ordenController = require('../../../../controllers/client/carshop/orden');
 
 
 // Middelware para validar el token antes de acceder a los recursos
-app.use(validateJWT)
+app.use(verifyToken)
 app.get('/orden', async(req,res)=>{
     await ordenController.obtenerOrdenesByUserId(req,res);
 })

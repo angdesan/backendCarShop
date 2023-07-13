@@ -1,8 +1,8 @@
 const express = require('express')
 const app = express();
 
-const register = require('./../../../controllers/client/auth/register');
-const { loginCarShopClient} = require('../../../controllers/auth/login')
+const register = require('../../../../controllers/client/auth/register');
+const { loginCarShopClient} = require('../../../../controllers/auth/login')
 
 app.post('/signup', async(req,res)=>{
     await register(req,res);

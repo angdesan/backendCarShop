@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const env = require('./../lib/env');
+const env = require('../lib/env');
 const config = env.getConfig()
 
 const verifyToken = (req, res, next) =>{
@@ -14,4 +14,14 @@ const verifyToken = (req, res, next) =>{
     }
 }
 
-module.exports = verifyToken;
+const verifySession = (req,res,next)=>{
+    if(!req.session.user){
+        return res.redirect('/admin/login');
+    }
+    next();
+}
+
+module.exports = {
+    verifyToken,
+    verifySession
+};
