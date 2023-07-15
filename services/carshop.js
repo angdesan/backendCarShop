@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const OrdenModel = require('./../models/client/carshop/orden');
+const OrdenModel = require('./../models/carshop/orden');
 
 const actualizarEstadoOrden = async (req,res) =>{
     try{

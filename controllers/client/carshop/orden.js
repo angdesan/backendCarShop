@@ -1,7 +1,7 @@
 const ordenModel = require('./../../../models/carshop/orden');
 const clienteModel = require('./../../../models/carshop/cliente');
 const vehiculoModel = require('./../../../models/carshop/vehiculo');
-
+const {ObjectId} = require('mongodb');
 
 const generarOrden = async(req, res)=>{
     try{
@@ -34,7 +34,7 @@ const generarOrden = async(req, res)=>{
             cliente: insertDataCliente.insertedId,
             vehiculo: inserDataVehiculo.insertedId,
             servicios: servicios,
-            idUser: idUsuario,
+            idUser: new ObjectId(idUsuario),
             estado: 'Enviada',
             estadoLogico: 1,
             createdAt: new Date()

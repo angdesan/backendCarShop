@@ -457,13 +457,15 @@ $(document).ready(function(){
 		let url =  'http://localhost:10000/api/v1/admin/carshop/orden/';
 		if(orden.length){
 			ordenSelect = orden[0];
-			data = {
-				estado: "Cancelada",
-				motivoCancelacion: $('#motivoCancel').val(),
+			if(ordenSelect.estado !== "Cancelada"){
+				data = {
+					estado: "Cancelada",
+					motivoCancelacion: $('#motivoCancel').val(),
+				}
+				console.log('DATA:', data)
+				url = url + ordenSelect._id+ '/cancelarOrden';
+				const response = putData(url, data);
 			}
-			console.log('DATA:', data)
-			url = url + ordenSelect._id+ '/cancelarOrden';
-			const response = putData(url, data);
 		}
 		
         $('#cancelarOrden').modal('hide');
@@ -484,13 +486,15 @@ $(document).ready(function(){
 		let url =  'http://localhost:10000/api/v1/admin/carshop/orden/';
 		if(orden.length){
 			ordenSelect = orden[0];
-			data = {
-				estado: "Cita Agendada",
-				fechaCita: $('#fecha_hora').val(),
+			if(ordenSelect.estado === "Enviada" && ordenSelect.estado !== "Cancelada"){
+				data = {
+					estado: "Cita Agendada",
+					fechaCita: $('#fecha_hora').val(),
+				}
+				console.log('DATA:', data)
+				url = url + ordenSelect._id + '/agendarCitaOrden';
+				const response = putData(url, data);
 			}
-			console.log('DATA:', data)
-			url = url + ordenSelect._id + '/agendarCitaOrden';
-			const response = putData(url, data);
 		}
 		
         $('#agendarCitaOrden').modal('hide');
