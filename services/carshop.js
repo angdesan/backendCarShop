@@ -5,7 +5,7 @@ const actualizarEstadoOrden = async (req,res) =>{
     try{
         const ordenId = req.params.id;
         const data = req.body;
-        const validar=false;
+        let validar=false;
         if(data.estado === "Servicio En Proceso"){
             validar=true;
         }else if(data.estado === "Servicio Terminado"){

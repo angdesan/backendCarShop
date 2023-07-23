@@ -82,7 +82,6 @@ const editarOrden = async (req,res)=>{
         let {nombre,email,numeroContacto,tipoIdentificacion,identificacion} = ordenData.cliente;
         let {marca,modelo,placa,nivelTanqueGas,detalle} = ordenData.vehiculo;
         let servicios = ordenData.servicios;
-        let idUsuario = ordenData.idUsuario;
         let orden = await ordenModel.findOne(idOrden);
         let cliente = await clienteModel.findOne(orden.cliente);
         let vehiculo = await vehiculoModel.findOne(orden.vehiculo);
